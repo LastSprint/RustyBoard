@@ -1,0 +1,15 @@
+[
+  {
+    "project_name": "SurfGen",
+    "jira_queries": [
+      "component = SurfGen",
+      "component = \"2020 SurfGen\""
+    ]
+  },
+  {
+    "project_name": "DebugScreen",
+    "jira_queries": [
+      "component = SurfDebugScreen"
+    ]
+  }
+]
