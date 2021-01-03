@@ -5,6 +5,7 @@ import (
 	"RustyBoard/persistence"
 	"RustyBoard/server/models"
 	"encoding/json"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
@@ -28,10 +29,13 @@ func (api *Api) Run() {
 
 	srv.HandleFunc("/projects", api.getAllProjects)
 
-	http.ListenAndServe(api.ServeAddr, srv)
+	handler := cors.Default().Handler(srv)
+
+	http.ListenAndServe(api.ServeAddr, handler)
 }
 
 func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
+
 	data, err := api.DB.ReadAll()
 
 	if err != nil {
@@ -50,6 +54,8 @@ func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
 		if projectInfo == nil {
 			continue
 		}
+
+		projectInfo.ImageUrl = item.ImageUrl
 
 		result.Data = append(result.Data, *projectInfo)
 	}

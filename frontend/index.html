@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/vuesax/dist/vuesax.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@4/distr/fira_code.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+</head>
+<body style="background-color: #525252">
+
+<div id="app">
+    <rb-project-info
+            style="padding-top: 22px"
+            v-for="project in projects"
+            v-bind:key="project.name + `ROOT_ID`"
+            v-bind:project="project"
+    ></rb-project-info>
+</div>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vuesax"></script>
+<script src="js/AnalyticsComponent.js"></script>
+<script src="js/ChartRectDrawExt.js"></script>
+<script src="js/DrawChart.js"></script>
+<script src="js/DrawLineChart.js"></script>
+<script src="js/ComponentFactory.js"></script>
+<script src="js/network.js"></script>
+
+<script>
+
+    var result = JSON.parse(loadAllProjects()).data
+
+    console.log(result)
+
+    RegisterAllComponents()
+
+    new Vue({
+        el: '#app',
+        data: {
+            projects: result
+        }
+    })
+
+    result.forEach(function (item) {
+        fillCharts(item)
+    })
+
+    function fillCharts(project) {
+        var an = project.wholeWorkAnalytics;
+        var data = [an.taskSpent, an.bugSpent, an.serviceSpent, an.testSpent]
+        Draw(project.name + 'CANVAS', data)
+
+        var resp = an.workLog.map(function (item) {
+            return {
+                x: getDateOfISOWeek(item.week, item.year).getTime(),
+                y: item.timeSpent
+            }
+        }).sort(function (a, b) {
+            return a.x - b.x
+        })
+
+        var labels = resp.map(function (item){
+            var date = new Date(item.x)
+            console.log(date)
+            var year = date.getFullYear()
+            var moth = date.getMonth()
+            var day = date.getDay()
+            return `${year}.${moth}.${day}`
+        })
+
+        DrawLineChart(project.name + 'CANVAS_TIME', resp, labels)
+    }
+
+    function getDateOfISOWeek(w, y) {
+        var simple = new Date(y, 0, 1 + (w - 1) * 7);
+        var dow = simple.getDay();
+        var ISOweekStart = simple;
+        if (dow <= 4)
+            ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+        else
+            ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+        return ISOweekStart;
+    }
+
+</script>
+</body>
+</html>

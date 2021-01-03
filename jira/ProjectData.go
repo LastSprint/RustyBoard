@@ -44,4 +44,5 @@ type ProjectData struct {
 	Name string `json:"name"`
 	WhoWorks []PerUserAnalytics `json:"whoWorks"`
 	WholeWorkAnalytics WorkAnalytics `json:"wholeWorkAnalytics"`
+	ImageUrl string `json:"imageUrl"`
 }
