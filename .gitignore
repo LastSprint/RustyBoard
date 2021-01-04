@@ -31,3 +31,5 @@ db.json
 .idea/workspace.xml
 .caddy/.DS_Store
 db.json
+
+.idea
