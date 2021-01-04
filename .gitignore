@@ -17,3 +17,17 @@ Dockerfile-srv
 db.json
 
 ./caddyroot
+.caddy/hostname
+.caddy/hosts
+db.json
+.idea/workspace.xml
+.caddy/caddycerts/ocsp/lastsprint.dev-d2368f69
+.caddy/caddycerts/uuid
+.caddy/caddycerts/key.pem
+.caddy/caddycerts/cert.pem
+.caddy/caddycerts/.DS_Store
+.caddy/resolv.conf
+.caddy/Caddyfile
+.idea/workspace.xml
+.caddy/.DS_Store
+db.json
