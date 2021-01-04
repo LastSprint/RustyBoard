@@ -35,3 +35,4 @@ db.json
 .idea
 
 .caddyroot
+build_release.sh

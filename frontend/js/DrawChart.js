@@ -26,7 +26,7 @@ function Draw(chartId, data) {
     var myChart = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
-            labels: ['На таски', 'На баги', 'На севрис-таски', 'На тесты'],
+            labels: ['On Tasks', 'On Bugs', 'On Service-Tasks', 'On Tests'],
             datasets: dataset,
         },
         options: {
@@ -87,10 +87,10 @@ function Draw(chartId, data) {
 
 function secondsToStringView(seconds) {
     if (seconds < 60) {
-        return `${seconds}с`
+        return `${seconds}s`
     } else if (seconds < (60 * 60)) {
-        return `${(seconds/60).toFixed(2)}м`
+        return `${(seconds/60).toFixed(2)}m`
     } else {
-        return `${(seconds/60/60).toFixed(2)}ч`
+        return `${(seconds/60/60).toFixed(2)}h`
     }
 }

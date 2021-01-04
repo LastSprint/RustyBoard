@@ -64,13 +64,13 @@ var ProjectInfo = {
                 <vs-row vs-justify="flex-start" style="margin-top: 8px">
                     <vs-col type="flex" vs-justify="left" vs-align="left" vs-w="5.9">
                         <rb-chart-component
-                            title="Затрекано"
+                            title="Tracked"
                             v-bind:canvasId="project.name + 'CANVAS'">
                         </rb-chart-component>
                     </vs-col>
                     <vs-col type="flex" vs-justify="right" vs-align="right" vs-w="5.9" style="margin-left: 8px">
                         <rb-chart-component
-                            title="Активность"
+                            title="Activity"
                             v-bind:canvasId="project.name + 'CANVAS_TIME'"
                         ></rb-chart-component>
                     </vs-col>

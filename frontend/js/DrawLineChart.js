@@ -62,10 +62,10 @@ function DrawLineChart(chartId, data, labels) {
 
 function secondsToStringView(seconds) {
     if (seconds < 60) {
-        return `${seconds}с`
+        return `${seconds}s`
     } else if (seconds < (60 * 60)) {
-        return `${(seconds/60).toFixed(0)}м`
+        return `${(seconds/60).toFixed(0)}m`
     } else {
-        return `${(seconds/60/60).toFixed(0)}ч`
+        return `${(seconds/60/60).toFixed(0)}h`
     }
 }
