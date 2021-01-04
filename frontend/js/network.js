@@ -1,5 +1,5 @@
 
-const SERVER_URL = "https://lastsprint.dev"
+const SERVER_URL = "http://127.0.0.1:6644"
 
 function loadAllProjects() {
 
