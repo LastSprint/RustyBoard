@@ -61,19 +61,13 @@
         })
 
         var labels = resp.map(function (item){
-            var date = new Date(item.x)
-            console.log(date)
-            var year = date.getFullYear()
-            var moth = date.getMonth()
-            var day = date.getDay()
-            return `${year}.${moth}.${day}`
+            return new Date(item.x).toLocaleDateString()
         })
 
         DrawLineChart(project.name + 'CANVAS_TIME', resp, labels)
     }
 
     function getDateOfISOWeek(w, y) {
-        console.log("W:", w, "Y:", y)
         var simple = new Date(y, 0, 1 + (w - 1) * 7);
         var dow = simple.getDay();
         var ISOweekStart = simple;
