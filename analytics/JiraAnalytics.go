@@ -40,6 +40,7 @@ func (an *JiraAnalytics) Run(data []persistence.StoredItem) ([]jira.ProjectData,
 		}
 
 		if dt != nil {
+			dt.ImageUrl = data[i].ImageUrl
 			resultData = append(resultData, *dt)
 		}
 	}
