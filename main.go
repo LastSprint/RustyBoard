@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RustyBoard/analytics"
 	"RustyBoard/jira"
 	"RustyBoard/persistence"
 	"RustyBoard/server"
@@ -10,30 +11,32 @@ import (
 
 const (
 	PathToDbFileKey string = "RUSTY_BOARD_PATH_TO_DB_FILE"
-	ServeAddress string = "RUSTY_BOARD_SERVE_ADDRESS"
-	JiraSearchUrl string = "RUSTY_BOARD_JIRA_SEARCH_URL"
-	JiraLogin string = "RUSTY_BOARD_JIRA_LOGIN"
-	JiraPass string = "RUSTY_BOARD_JIRA_PASSWORD"
+	ServeAddress    string = "RUSTY_BOARD_SERVE_ADDRESS"
+	JiraSearchUrl   string = "RUSTY_BOARD_JIRA_SEARCH_URL"
+	JiraLogin       string = "RUSTY_BOARD_JIRA_LOGIN"
+	JiraPass        string = "RUSTY_BOARD_JIRA_PASSWORD"
 )
 
-func main()  {
+func main() {
 	srv := server.Api{
-		DB: createDb(),
-		ServeAddr:    EnvOrCurrent(ServeAddress,"0.0.0.0:6644"),
+		DB:           createDb(),
+		ServeAddr:    EnvOrCurrent(ServeAddress, "0.0.0.0:6644"),
 		JiraAnalyzer: createJiraAnalyzer(),
 	}
 
 	srv.Run()
 }
 
-func createJiraAnalyzer() *jira.Analyzer {
-	return &jira.Analyzer{
-		&jira.JiraServiceWrapper{
-			services.NewJiraIssueLoader(
+func createJiraAnalyzer() *analytics.JiraAnalytics {
+	return &analytics.JiraAnalytics{
+		JiraAnalyzer: &jira.Analyzer{
+			&jira.JiraServiceWrapper{
+				services.NewJiraIssueLoader(
 					EnvOrCurrent(JiraSearchUrl, ""),
 					EnvOrCurrent(JiraLogin, ""),
 					EnvOrCurrent(JiraPass, ""),
 				),
+			},
 		},
 	}
 }

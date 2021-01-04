@@ -15,7 +15,7 @@ type DB interface {
 }
 
 type JiraAnalyzer interface {
-	Analyze(jql []string, name string) (*jira.ProjectData, []error)
+	Run(data []persistence.StoredItem) ([]jira.ProjectData, []error)
 }
 
 type Api struct {
@@ -42,22 +42,11 @@ func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
 		writeError(w, err, http.StatusInternalServerError)
 	}
 
-	result := models.GetAllProjectResponse{}
+	analytics, errors := api.JiraAnalyzer.Run(data)
 
-	for _, item := range data {
-		projectInfo, errs := api.JiraAnalyzer.Analyze(item.JiraQueries, item.ProjectName)
-
-		for _, it := range errs {
-			result.Errors = append(result.Errors, it)
-		}
-
-		if projectInfo == nil {
-			continue
-		}
-
-		projectInfo.ImageUrl = item.ImageUrl
-
-		result.Data = append(result.Data, *projectInfo)
+	result := models.GetAllProjectResponse{
+		Data:   analytics,
+		Errors: errors,
 	}
 
 	if err := json.NewEncoder(w).Encode(result); err != nil {
@@ -68,7 +57,7 @@ func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
 func writeError(w http.ResponseWriter, err error, code int) {
 	w.WriteHeader(code)
 
-	err = json.NewEncoder(w).Encode(map[string]string {"msg": err.Error()})
+	err = json.NewEncoder(w).Encode(map[string]string{"msg": err.Error()})
 
 	if err != nil {
 		log.Println("[WARN] Couldn't serialize error while writing json", err.Error())
