@@ -55,7 +55,7 @@ const ProjectInfoKey = "rb-project-info"
 var ProjectInfo = {
     props: ['project'],
     template: `
-    <vs-row vs-justify="left" style="padding-left: 22px">
+    <vs-row vs-justify="center" style="padding-left: 22px">
         <vs-col type="flex" vs-justify="left" vs-align="left" vs-w="8" style="width: 70%">
             <vs-card style="background-color: #414141" actionable class="cardx">
                 <rb-project-header

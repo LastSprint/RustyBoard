@@ -1,6 +1,6 @@
 module RustyBoard
 
-go 1.16
+go 1.15
 
 require (
 	github.com/LastSprint/JiraGoIssues v1.1.4

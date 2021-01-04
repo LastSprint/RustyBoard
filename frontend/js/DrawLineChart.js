@@ -42,9 +42,14 @@ function DrawLineChart(chartId, data, labels) {
                     }
                 }],
             },
-            // tooltips: {
-            //     // enabled: false
-            // },
+            tooltips: {
+                enabled: true,
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        return secondsToStringView(tooltipItem.value)
+                    }
+                }
+            },
             title: {
                 enabled: false
             },
