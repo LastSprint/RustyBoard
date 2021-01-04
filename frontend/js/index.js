@@ -7,6 +7,8 @@ function init() {
 function runVue(result) {
     result = result.data
 
+    console.log("$$$$", result[0].whoWorks)
+
     new Vue({
         el: '#app',
         data: {
@@ -16,7 +18,29 @@ function runVue(result) {
 
     result.forEach(function (item) {
         fillCharts(item)
+        item.whoWorks.forEach(function (uw) {
+            fillUserChart(uw)
+        })
     })
+}
+
+function fillUserChart(userwork) {
+    var an = userwork.workAnalytics;
+
+    var resp = an.workLog.map(function (item) {
+        return {
+            x: getDateOfISOWeek(item.week, item.year).getTime(),
+            y: item.timeSpent
+        }
+    }).sort(function (a, b) {
+        return a.x - b.x
+    })
+
+    var labels = resp.map(function (item){
+        return new Date(item.x).toLocaleDateString()
+    })
+
+    DrawLineChart(userwork.user.name+'USER_CANVAS', resp, labels)
 }
 
 function fillCharts(project) {
