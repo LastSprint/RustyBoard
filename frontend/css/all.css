@@ -1,55 +1,83 @@
-html, body {
-    height: 100%;
-    padding-top: 10px;
-    background: #e6ecf1;
+.rbcenter {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    padding: 10px;
+
 }
 
-#app {
-    height: 100%;
-    padding-top: 0px;
-    text-align: center;
+
+
+.trinity-rings-spinner, .trinity-rings-spinner * {
+    box-sizing: border-box;
 }
 
-#app .button {
-    margin-bottom: 20px;
+.trinity-rings-spinner {
+    height: 172px;
+    width: 172px;
+    padding: 3px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+.trinity-rings-spinner .circle {
+    position:absolute;
+    display:block;
+    border-radius:50%;
+    border: 3px solid #f5f3f1;
+    opacity: 1;
 }
 
-#app .tweet {
-    max-width: 500px;
-    margin: 0 auto;
-    padding-bottom: 15px;
+.trinity-rings-spinner .circle:nth-child(1) {
+    height: 172px;
+    width: 172px;
+    animation : trinity-rings-spinner-circle1-animation 1.5s infinite linear;
+    border-width: 3px;
+}
+.trinity-rings-spinner .circle:nth-child(2) {
+    height: calc(172px * 0.65);
+    width: calc(172px * 0.65);
+    animation : trinity-rings-spinner-circle2-animation 1.5s infinite linear;
+    border-width: 2px;
+}
+.trinity-rings-spinner .circle:nth-child(3) {
+    height: calc(172px * 0.1);
+    width: calc(172px * 0.1);
+    animation:trinity-rings-spinner-circle3-animation 1.5s infinite linear;
+    border-width: 1px;
 }
 
-#app .box {
-    margin-bottom: 0;
-    border-radius: 0;
+@keyframes trinity-rings-spinner-circle1-animation{
+    0% {
+        transform: rotateZ(20deg) rotateY(0deg);
+    }
+    100% {
+        transform: rotateZ(100deg) rotateY(360deg);
+    }
 }
-
-#app .content small {
-    color: #00d1b2;
+@keyframes trinity-rings-spinner-circle2-animation{
+    0% {
+        transform: rotateZ(100deg) rotateX(0deg);
+    }
+    100% {
+        transform: rotateZ(0deg) rotateX(360deg);
+    }
 }
-
-#app img {
-    border-radius: 30px;
-}
-
-#app .level-item {
-    padding-left: 10px;
-    color: #00d1b2;
-}
-
-#app input:focus {
-    border-color: #00d1b2;
-}
-
-#app .likes {
-    padding: 0 7.5px;
-}
-
-#app input {
-    font-weight: bold;
-}
-
-#app .tweets-move {
-    transition: transform 1s;
+@keyframes trinity-rings-spinner-circle3-animation{
+    0% {
+        transform: rotateZ(100deg) rotateX(-360deg);
+    }
+    100% {
+        transform: rotateZ(-360deg) rotateX(360deg);
+    }
 }

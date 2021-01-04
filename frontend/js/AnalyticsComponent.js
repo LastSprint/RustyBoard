@@ -87,7 +87,7 @@ var UserCard = {
             <vs-row vs-justify="flex-start">
                 <vs-avatar
                     v-bind:src="userWork.user.imgUrl"
-                    size="large" 
+                    size="36px" 
                 ></vs-avatar>
                 <rb-name-component
                     v-bind:title="userWork.user.name"

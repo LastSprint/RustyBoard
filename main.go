@@ -2,6 +2,7 @@ package main
 
 import (
 	"RustyBoard/analytics"
+	"RustyBoard/image_cacher"
 	"RustyBoard/jira"
 	"RustyBoard/persistence"
 	"RustyBoard/server"
@@ -15,6 +16,7 @@ const (
 	JiraSearchUrl   string = "RUSTY_BOARD_JIRA_SEARCH_URL"
 	JiraLogin       string = "RUSTY_BOARD_JIRA_LOGIN"
 	JiraPass        string = "RUSTY_BOARD_JIRA_PASSWORD"
+	StaticServerUrl string = "RUSTY_BOARD_STATIC_SERVER_URL"
 )
 
 func main() {
@@ -36,6 +38,12 @@ func createJiraAnalyzer() *analytics.JiraAnalytics {
 					EnvOrCurrent(JiraLogin, ""),
 					EnvOrCurrent(JiraPass, ""),
 				),
+			},
+			&image_cacher.AsyncImageCacher{
+				PathToFolderWithImages: "imgcache",
+				UrlPathToImages:        EnvOrCurrent(StaticServerUrl, "http://localhost:6644/imgcache"),
+				User:                   EnvOrCurrent(JiraLogin, ""),
+				Pass:                   EnvOrCurrent(JiraPass, ""),
 			},
 		},
 	}

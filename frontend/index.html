@@ -15,6 +15,7 @@
     <script src="js/network.js"></script>
     <script src="js/index.js"></script>
     <script src="js/ComponentFactory.js"></script>
+    <link href="css/all.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/vue-ellipse-progress/dist/vue-ellipse-progress.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">
@@ -22,12 +23,27 @@
 <body style="background-color: #525252">
 
 <div id="app">
-    <rb-project-info
-            style="padding-top: 22px"
-            v-for="project in projects"
-            v-bind:key="project.name + `ROOT_ID`"
-            v-bind:project="project"
-    ></rb-project-info>
+
+    <div v-if="loading" class="rbcenter">
+        <div style="text-align: center">
+            <div class="trinity-rings-spinner" style="position: relative; left: 20%">
+                <div class="circle"></div>
+                <div class="circle"></div>
+                <div class="circle"></div>
+            </div>
+            <p style="font-family: 'Fira Code', monospace; color: #f5f3f1;margin-top: 16px;">Loading...</p>
+            <p style="font-family: 'Fira Code', monospace; color: #f5f3f1">It's not as easy as you think 🥲...</p>
+        </div>
+    </div>
+
+    <div v-else>
+        <rb-project-info
+                style="padding-top: 22px"
+                v-for="project in projects"
+                v-bind:key="project.name + `ROOT_ID`"
+                v-bind:project="project"
+        ></rb-project-info>
+    </div>
 </div>
 
 <script>

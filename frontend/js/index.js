@@ -1,6 +1,18 @@
 function init() {
+
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            loading: true
+        }
+    })
+
     loadAllProjects(function (result) {
-        runVue(result)
+        vue.loading = false
+        vue.projects = result.data
+        setTimeout(function () {
+            runVue(result)
+        }, 30)
     })
 }
 
@@ -8,13 +20,6 @@ function runVue(result) {
     result = result.data
 
     console.log("$$$$", result[0].whoWorks)
-
-    new Vue({
-        el: '#app',
-        data: {
-            projects: result
-        }
-    })
 
     result.forEach(function (item) {
         fillCharts(item)

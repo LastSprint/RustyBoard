@@ -10,9 +10,15 @@ type IssueLoader interface {
 	LoadIssues(jql string) (models.IssueSearchWrapperEntity, error)
 }
 
+type ImageCacher interface {
+	// Cache load image on URL `url` save it in FS and the return url to saved img
+	Cache(url string) string
+}
+
 /// Analyzer leads issues form Jira and create aggregations -- ProjectData
 type Analyzer struct {
 	IssueLoader
+	ImageCacher
 }
 
 /// Analyze make request for each JQL
@@ -28,7 +34,7 @@ func (a *Analyzer) Analyze(jql []string, name string) (*ProjectData, []error) {
 
 	return &ProjectData{
 		Name:               name,
-		WhoWorks:           collectByUser(entities),
+		WhoWorks:           a.collectByUser(entities),
 		WholeWorkAnalytics: makeWorkAnalytics(entities),
 	}, err
 }
@@ -56,27 +62,41 @@ func (a *Analyzer) loadAll(jqls []string) ([]models.IssueEntity, []error) {
 	return result, errs
 }
 
-func collectByUser(issues []models.IssueEntity) []PerUserAnalytics {
+func (an *Analyzer) collectByUser(issues []models.IssueEntity) []PerUserAnalytics {
 	groupedByUser := map[string][]models.IssueEntity{}
+	userAndImg := map[string]string{}
+	userAndDisplayName := map[string]string{}
 
 	for _, item := range issues {
 		if len(groupedByUser[item.Fields.Assignee.Name]) == 0 {
 			groupedByUser[item.Fields.Assignee.Name] = []models.IssueEntity{}
 		}
-
+		userAndDisplayName[item.Fields.Assignee.Name] = item.Fields.Assignee.DisplayName
+		userAndImg[item.Fields.Assignee.Name] = item.Fields.Assignee.AvatarUrls.LargestUrl
 		groupedByUser[item.Fields.Assignee.Name] = append(groupedByUser[item.Fields.Assignee.Name], item)
 	}
 
 	result := []PerUserAnalytics{}
 
 	for user, issue := range groupedByUser {
+
+		if len(user) == 0 {
+			continue
+		}
+
 		item := PerUserAnalytics{
 			User: User{
-				Name: user,
+				Name:   userAndDisplayName[user],
+				ImgUrl: an.ImageCacher.Cache(userAndImg[user]),
 			},
 			WorkAnalytics: makeWorkAnalytics(issue),
 		}
 
+		const day = 1 * 60 * 60 * 8
+
+		if item.WorkAnalytics.WholeSpent < day {
+			continue
+		}
 		result = append(result, item)
 	}
 

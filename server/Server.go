@@ -29,6 +29,10 @@ func (api *Api) Run() {
 
 	srv.HandleFunc("/projects", api.getAllProjects)
 
+	fs := http.FileServer(http.Dir("imgcache"))
+
+	srv.Handle("/imgcache/", http.StripPrefix("/imgcache", fs))
+
 	handler := cors.Default().Handler(srv)
 
 	http.ListenAndServe(api.ServeAddr, handler)
