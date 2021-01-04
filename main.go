@@ -7,7 +7,10 @@ import (
 	"RustyBoard/persistence"
 	"RustyBoard/server"
 	"github.com/LastSprint/JiraGoIssues/services"
+	"log"
 	"os"
+	"strconv"
+	"time"
 )
 
 const (
@@ -17,13 +20,20 @@ const (
 	JiraLogin       string = "RUSTY_BOARD_JIRA_LOGIN"
 	JiraPass        string = "RUSTY_BOARD_JIRA_PASSWORD"
 	StaticServerUrl string = "RUSTY_BOARD_STATIC_SERVER_URL"
+	CacheTTL string = "RUSTY_BOARD_CACHE_TTL"
+	ImageCacheDirPath string = "RUSTY_BOARD_IMAGE_CACHE_DIR_PATH"
 )
+
+var imgCacheDirPath = EnvOrCurrent(ImageCacheDirPath, "imgcache")
 
 func main() {
 	srv := server.Api{
 		DB:           createDb(),
 		ServeAddr:    EnvOrCurrent(ServeAddress, "0.0.0.0:6644"),
 		JiraAnalyzer: createJiraAnalyzer(),
+		CacheTTL: readCacheTTL(),
+		ImageCacheDirPath: imgCacheDirPath,
+		ImageCachePathPrefix: imgCacheDirPath,
 	}
 
 	srv.Run()
@@ -40,7 +50,7 @@ func createJiraAnalyzer() *analytics.JiraAnalytics {
 				),
 			},
 			&image_cacher.AsyncImageCacher{
-				PathToFolderWithImages: "imgcache",
+				PathToFolderWithImages: imgCacheDirPath,
 				UrlPathToImages:        EnvOrCurrent(StaticServerUrl, "http://localhost:6644/imgcache"),
 				User:                   EnvOrCurrent(JiraLogin, ""),
 				Pass:                   EnvOrCurrent(JiraPass, ""),
@@ -70,4 +80,16 @@ func EnvOrCurrent(key string, def string) string {
 	}
 
 	return env
+}
+
+func readCacheTTL() time.Duration {
+	ttlString := EnvOrCurrent(CacheTTL, "10")
+	val, err := strconv.Atoi(ttlString)
+
+	if err != nil {
+		log.Println("[ERR] Couldn't parse CacheTTL", ttlString)
+		return time.Duration(10)
+	}
+
+	return time.Duration(val)
 }

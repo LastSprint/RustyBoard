@@ -8,6 +8,8 @@ import (
 	"github.com/rs/cors"
 	"log"
 	"net/http"
+	"sync"
+	"time"
 )
 
 type DB interface {
@@ -22,6 +24,9 @@ type Api struct {
 	DB
 	ServeAddr string
 	JiraAnalyzer
+	CacheTTL time.Duration
+	ImageCacheDirPath string
+	ImageCachePathPrefix string
 }
 
 func (api *Api) Run() {
@@ -29,16 +34,33 @@ func (api *Api) Run() {
 
 	srv.HandleFunc("/projects", api.getAllProjects)
 
-	fs := http.FileServer(http.Dir("imgcache"))
+	fs := http.FileServer(http.Dir(api.ImageCacheDirPath))
 
-	srv.Handle("/imgcache/", http.StripPrefix("/imgcache", fs))
+	srv.Handle("/"+api.ImageCachePathPrefix+"/", http.StripPrefix("/" + api.ImageCachePathPrefix, fs))
 
 	handler := cors.Default().Handler(srv)
 
 	http.ListenAndServe(api.ServeAddr, handler)
 }
 
+type ResponseCache struct {
+	data models.GetAllProjectResponse
+	time time.Time
+}
+
+var cache = ResponseCache{}
+
+var mutex = &sync.Mutex{}
+
 func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
+
+	if cache.time.Add(time.Minute * api.CacheTTL).After(time.Now()) {
+		if err := json.NewEncoder(w).Encode(cache.data); err != nil {
+			writeError(w, err, http.StatusInternalServerError)
+		}
+		return
+	}
+
 
 	data, err := api.DB.ReadAll()
 
@@ -53,6 +75,10 @@ func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
 		Errors: errors,
 	}
 
+	mutex.Lock()
+	cache.time = time.Now()
+	cache.data = result
+	mutex.Unlock()
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		writeError(w, err, http.StatusInternalServerError)
 	}
