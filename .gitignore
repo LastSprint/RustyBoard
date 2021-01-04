@@ -31,7 +31,7 @@ db.json
 .idea/workspace.xml
 .caddy/.DS_Store
 db.json
-
+imgcache
 .idea
 
 .caddyroot
