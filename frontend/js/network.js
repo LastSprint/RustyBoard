@@ -8,7 +8,7 @@ function loadAllProjects() {
 
     console.log(url)
 
-    http.timeout = 100000
+    http.timeout = 100 * 10000
 
     http.open("GET", url, false);
     http.send(null);

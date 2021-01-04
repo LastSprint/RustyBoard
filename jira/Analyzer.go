@@ -10,11 +10,16 @@ type IssueLoader interface {
 	LoadIssues(jql string) (models.IssueSearchWrapperEntity, error)
 }
 
+/// Analyzer leads issues form Jira and create aggregations -- ProjectData
 type Analyzer struct {
 	IssueLoader
 }
 
-func (a* Analyzer) Analyze(jql []string, name string) (*ProjectData, []error) {
+/// Analyze make request for each JQL
+// Then merge results from each JQL request
+// BUT
+// it will return duplicated tasks by issue.key
+func (a *Analyzer) Analyze(jql []string, name string) (*ProjectData, []error) {
 	entities, err := a.loadAll(jql)
 
 	if len(entities) == 0 {
@@ -29,6 +34,7 @@ func (a* Analyzer) Analyze(jql []string, name string) (*ProjectData, []error) {
 }
 
 func (a *Analyzer) loadAll(jqls []string) ([]models.IssueEntity, []error) {
+	existed := map[string]bool{}
 	result := []models.IssueEntity{}
 	errs := []error{}
 	for _, jql := range jqls {
@@ -40,7 +46,10 @@ func (a *Analyzer) loadAll(jqls []string) ([]models.IssueEntity, []error) {
 		}
 
 		for _, item := range val.Issues {
-			result = append(result, item)
+			if _, ok := existed[item.Key]; !ok {
+				existed[item.Key] = true
+				result = append(result, item)
+			}
 		}
 	}
 
@@ -62,7 +71,7 @@ func collectByUser(issues []models.IssueEntity) []PerUserAnalytics {
 
 	for user, issue := range groupedByUser {
 		item := PerUserAnalytics{
-			User:          User{
+			User: User{
 				Name: user,
 			},
 			WorkAnalytics: makeWorkAnalytics(issue),
@@ -115,7 +124,7 @@ func calculateAverageSpendPerWeek(issues []models.IssueEntity, userName string) 
 	wholeLog := map[week][]models.HistoryEntity{}
 
 	for _, item := range issues {
-		grouped :=  groupLogByWeek(item.Changelog.Histories)
+		grouped := groupLogByWeek(item.Changelog.Histories)
 
 		for key, value := range grouped {
 
@@ -171,9 +180,9 @@ func groupLogByWeek(history []models.HistoryEntity) map[week][]models.HistoryEnt
 
 	for _, item := range history {
 
-		y,w := item.CreatedDateTime.Time.ISOWeek()
+		y, w := item.CreatedDateTime.Time.ISOWeek()
 
-		newWeek := week{y,w}
+		newWeek := week{y, w}
 
 		if len(result[newWeek]) == 0 {
 			result[newWeek] = []models.HistoryEntity{}

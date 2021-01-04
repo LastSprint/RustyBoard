@@ -10,9 +10,9 @@ import (
 // StoredItem element which is stored in DB
 // represents a project
 type StoredItem struct {
-	ProjectName string `json:"project_name"`
+	ProjectName string   `json:"project_name"`
 	JiraQueries []string `json:"jira_queries"`
-	ImageUrl string `json:"image_url"`
+	ImageUrl    string   `json:"image_url"`
 }
 
 // OneFileDB it's just one file which is used for storing information

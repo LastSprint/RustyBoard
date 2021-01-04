@@ -30,19 +30,19 @@ type WorkAnalytics struct {
 }
 
 type User struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
 	ImgUrl string `json:"imgUrl"`
 }
 
 type PerUserAnalytics struct {
-	User `json:"user"`
+	User          `json:"user"`
 	WorkAnalytics `json:"workAnalytics"`
 }
 
 // ProjectData describes analytics about this project
 type ProjectData struct {
-	Name string `json:"name"`
-	WhoWorks []PerUserAnalytics `json:"whoWorks"`
-	WholeWorkAnalytics WorkAnalytics `json:"wholeWorkAnalytics"`
-	ImageUrl string `json:"imageUrl"`
+	Name               string             `json:"name"`
+	WhoWorks           []PerUserAnalytics `json:"whoWorks"`
+	WholeWorkAnalytics WorkAnalytics      `json:"wholeWorkAnalytics"`
+	ImageUrl           string             `json:"imageUrl"`
 }
