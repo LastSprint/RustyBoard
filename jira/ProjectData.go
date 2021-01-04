@@ -20,6 +20,8 @@ type WorkAnalytics struct {
 
 	// WholeSpent what time was spent entirely
 	WholeSpent int `json:"wholeSpent"`
+	// WholeEstimated sum of issues' estimate
+	WholeEstimated int `json:"wholeEstimated"`
 	// WorkLog is array of week where each week associated with time was spent in this week
 	WorkLog []Week `json:"workLog"`
 

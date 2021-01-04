@@ -109,6 +109,7 @@ func makeWorkAnalytics(issues []models.IssueEntity) WorkAnalytics {
 
 		if item.Fields.Issuetype.ID != models.IssueTypeEpic {
 			result.WholeSpent += item.Fields.TimeSpend
+			result.WholeEstimated += item.Fields.Estimate
 		}
 	}
 

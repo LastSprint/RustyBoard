@@ -1,19 +1,36 @@
 
 const SERVER_URL = "http://127.0.0.1:6644"
 
-function loadAllProjects() {
+function loadAllProjects(callback) {
 
-    var http = new XMLHttpRequest();
     const url= SERVER_URL + "/projects";
 
     console.log(url)
 
-    http.timeout = 100 * 10000
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
 
-    http.open("GET", url, false);
-    http.send(null);
+    xhr.onload = function (e) {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                callback(JSON.parse(xhr.response))
+            } else {
+                console.error(xhr.statusText);
+            }
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText);
+    };
 
-    console.log(JSON.parse(http.response))
+    xhr.timeout = 100 * 10000
 
-    return http.response
+    xhr.send(null);
+
+    // http.open("GET", url, false);
+    // http.send(null);
+    //
+    // console.log()
+    //
+    // return http.response
 }
