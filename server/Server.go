@@ -24,13 +24,13 @@ type Api struct {
 	DB
 	ServeAddr string
 	JiraAnalyzer
-	CacheTTL time.Duration
-	ImageCacheDirPath string
+	CacheTTL             time.Duration
+	ImageCacheDirPath    string
 	ImageCachePathPrefix string
-	FrontendFilePath string
+	FrontendFilePath     string
 
 	CertPath string
-	KeyPath string
+	KeyPath  string
 }
 
 func (api *Api) Run() {
@@ -42,10 +42,19 @@ func (api *Api) Run() {
 
 	web := http.FileServer(http.Dir(api.FrontendFilePath))
 
-	srv.Handle("/"+api.ImageCachePathPrefix+"/", http.StripPrefix("/" + api.ImageCachePathPrefix, fs))
-	srv.Handle("/", web)
+	srv.Handle("/"+api.ImageCachePathPrefix+"/", http.StripPrefix("/"+api.ImageCachePathPrefix, fs))
+
+	if len(api.FrontendFilePath) != 0 {
+		srv.Handle("/", web)
+	}
 
 	handler := cors.Default().Handler(srv)
+
+	log.Println("Server starts listening with params:")
+	log.Println("CertPath:", api.CertPath)
+	log.Println("KeyPath:", api.KeyPath)
+	log.Println("ServeAddr:", api.ServeAddr)
+	log.Println("CacheTTL:", api.CacheTTL)
 
 	if len(api.CertPath) == 0 && len(api.KeyPath) == 0 {
 		log.Fatal(http.ListenAndServe(api.ServeAddr, handler))
@@ -71,7 +80,6 @@ func (api *Api) getAllProjects(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-
 
 	data, err := api.DB.ReadAll()
 
