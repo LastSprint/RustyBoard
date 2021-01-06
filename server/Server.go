@@ -27,6 +27,10 @@ type Api struct {
 	CacheTTL time.Duration
 	ImageCacheDirPath string
 	ImageCachePathPrefix string
+	FrontendFilePath string
+
+	CertPath string
+	KeyPath string
 }
 
 func (api *Api) Run() {
@@ -36,11 +40,18 @@ func (api *Api) Run() {
 
 	fs := http.FileServer(http.Dir(api.ImageCacheDirPath))
 
+	web := http.FileServer(http.Dir(api.FrontendFilePath))
+
 	srv.Handle("/"+api.ImageCachePathPrefix+"/", http.StripPrefix("/" + api.ImageCachePathPrefix, fs))
+	srv.Handle("/", web)
 
 	handler := cors.Default().Handler(srv)
 
-	http.ListenAndServe(api.ServeAddr, handler)
+	if len(api.CertPath) == 0 && len(api.KeyPath) == 0 {
+		log.Fatal(http.ListenAndServe(api.ServeAddr, handler))
+	} else {
+		log.Fatal(http.ListenAndServeTLS(api.ServeAddr, api.CertPath, api.KeyPath, handler))
+	}
 }
 
 type ResponseCache struct {

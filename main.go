@@ -22,6 +22,9 @@ const (
 	StaticServerUrl string = "RUSTY_BOARD_STATIC_SERVER_URL"
 	CacheTTL string = "RUSTY_BOARD_CACHE_TTL"
 	ImageCacheDirPath string = "RUSTY_BOARD_IMAGE_CACHE_DIR_PATH"
+	PathToCert string = "RUSTY_BOARD_TLS_CERT_PATH"
+	PathToKey string = "RUSTY_BOARD_TLS_KEY_PATH"
+	PathToFrontend string = "RUSTY_BOARD_PATH_TO_FRONTEND"
 )
 
 var imgCacheDirPath = EnvOrCurrent(ImageCacheDirPath, "imgcache")
@@ -34,6 +37,9 @@ func main() {
 		CacheTTL: readCacheTTL(),
 		ImageCacheDirPath: imgCacheDirPath,
 		ImageCachePathPrefix: imgCacheDirPath,
+		CertPath: EnvOrCurrent(PathToCert, ""),
+		KeyPath: EnvOrCurrent(PathToKey, ""),
+		FrontendFilePath: EnvOrCurrent(PathToFrontend, ""),
 	}
 
 	srv.Run()
