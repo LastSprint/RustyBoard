@@ -18,19 +18,18 @@ function init() {
 
 function runVue(result) {
     result = result.data
-
-    console.log("$$$$", result[0].whoWorks)
-
     result.forEach(function (item) {
         fillCharts(item)
         item.whoWorks.forEach(function (uw) {
-            fillUserChart(uw)
+            fillUserChart(uw, item.name)
         })
     })
 }
 
-function fillUserChart(userwork) {
+function fillUserChart(userwork, projectName) {
     var an = userwork.workAnalytics;
+
+    console.log("PRRRR", projectName)
 
     var resp = an.workLog.map(function (item) {
         return {
@@ -45,7 +44,7 @@ function fillUserChart(userwork) {
         return new Date(item.x).toLocaleDateString()
     })
 
-    DrawLineChart(userwork.user.name+'USER_CANVAS', resp, labels)
+    DrawLineChart(userwork.user.name+'USER_CANVAS'+projectName, resp, labels)
 }
 
 function fillCharts(project) {

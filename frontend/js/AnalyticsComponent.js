@@ -72,7 +72,7 @@ var ProgressBar = {
 const UserCardKey = "rb-user-card"
 
 var UserCard = {
-    props: ['userWork', 'prjAn'],
+    props: ['userWork', 'prjAn', 'projectName'],
     methods: {
         progress: function (left, right) {
             var calc = left / right * 100
@@ -97,7 +97,7 @@ var UserCard = {
         <vs-row>
             <rb-chart-component
                 title="Activity"
-                :canvasId="userWork.user.name+'USER_CANVAS'"
+                :canvasId="userWork.user.name+'USER_CANVAS'+projectName"
             ></rb-chart-component>
         </vs-row>
         <vs-row style="display: flex;justify-content: center;align-items: center;">
@@ -218,7 +218,7 @@ const ProjectInfoKey = "rb-project-info"
 const UserCardWrapperKey = "rb-user-card-wrapper"
 
 var UserCardWrapper = {
-    props: ['userWork', 'prjAn'],
+    props: ['userWork', 'prjAn', 'projectName'],
     template:`
     <vs-col 
         type="flex" 
@@ -229,6 +229,7 @@ var UserCardWrapper = {
         <rb-user-card
             v-bind:userWork="userWork"
             v-bind:prjAn="prjAn"
+            v-bind:projectName="projectName"
         ></rb-user-card>
     </vs-col>
     `
@@ -278,9 +279,10 @@ var ProjectInfo = {
                                 <rb-user-card-wrapper 
                                     style="margin-left: 16px"
                                     v-for="it in project.whoWorks"
-                                    v-bind:key="it.user.name + \`ROOT_USER_ID\`"
+                                    v-bind:key="it.user.name + \`ROOT_USER_ID\` + project.name"
                                     v-bind:userWork="it"
                                     v-bind:prjAn="project.wholeWorkAnalytics"
+                                    v-bind:projectName="project.name"
                                 ></rb-user-card-wrapper>
                             </vs-collapse-item>
                         </vs-collapse>
